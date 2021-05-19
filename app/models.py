@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
     folders = db.relationship("Folder")
 
     def __repr__(self) -> str:
-        return f"{self.username}, {self.password}"
+        return f"({self.username}, {self.password})"
 
 class Folder(db.Model):
     __tablename__ = "folders"
@@ -20,14 +20,14 @@ class Folder(db.Model):
     subtopics = db.relationship("Topic")
 
     def __repr__(self) -> str:
-        return f"{self.name}, {self.subtopics}"
+        return f"({self.name}, {self.subtopics})"
 
 class Topic(db.Model):
     __tablename__ = "topics"
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     folderid = db.Column(db.Integer, db.ForeignKey("folders.id"))
     title = db.Column(db.String, nullable=False)
-    data = db.Column(db.JSON, nullable=True)
+    data = db.Column(db.JSON, nullable=False)
 
     def __repr__(self) -> str:
-        return f"{self.title}, {self.data}"
+        return f"({self.title}, {self.data})"

@@ -2,5 +2,27 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<p>{{ username }}</p>
 <h1>Home page</h1>
+
+<div class="topics">
+    {% for folder in folders %}
+        <div class="topic">
+            <h2>{{ folder.name }}</h2>
+            <a href="{{ url_for('views.folder', folder_id=folder.id) }}">View Folder</a>
+            <!-- <ul>
+                {% for topic in folder.subtopics %}
+                    <li>
+                        <a href="{{ url_for('views.topic', topic_id=topic.id) }}">{{ topic.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul> -->
+        </div>
+    {% endfor %}
+    <h2>New Folder</h2>
+    <form action="{{ url_for('views.add_folder') }}" method="POST">
+        <input type="text" name="name" id="name" placeholder="Folder name">
+        <input type="submit" value="Create Folder">
+    </form>
+</div>
 {% endblock %}

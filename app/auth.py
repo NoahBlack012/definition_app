@@ -61,11 +61,11 @@ def login():
             flash("Login successful", "success")
             # Login and return home page
             login_user(db_user, remember=True)
-            return render_template("home.html")
+            return redirect(url_for("views.home"))
         else:
             # Flash alert - incorrect password
             flash("The username or password you entered is incorrect", "error")
-    return render_template("login.html")
+    return redirect(url_for("views.home"))
 
 @auth.route("/logout")
 @login_required
