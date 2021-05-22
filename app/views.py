@@ -100,6 +100,30 @@ def add_data(topic_id):
 
     return redirect(url_for("views.topic", topic_id=topic_id))
 
+@views.route("/edit_def", methods=["POST"])
+@login_required
+def edit_def():
+    old_key = request.args.get("def")
+    topic_id = request.args.get("topic_id")
+    new_key = request.form.get("new_key")
+    new_value = request.form.get("new_value")
+
+    topic = Topic.query.filter_by(id=topic_id).first()
+    folder_id = topic.folderid
+    folder = Folder.query.filter_by(id=folder_id).first()
+    if current_user.id != folder.userid:
+        return redirect(url_for("auth.logout"))
+
+    data = topic.data 
+    data.pop(old_key, None)
+
+    data[new_key] = new_value
+    Topic.query.filter_by(id=topic_id).update(dict(data=data))
+    db.session.commit()
+
+    return redirect(url_for("views.topic", topic_id=topic_id))
+
+
 
     
     

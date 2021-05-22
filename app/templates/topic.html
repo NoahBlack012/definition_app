@@ -1,5 +1,27 @@
 {% extends 'layout.html' %}
 {% block title %}Topic Name{% endblock %}
+{% block head %}
+<script>
+    function edit(def){
+        document.querySelector(`.${def}_edit`).style = "display:block";
+        document.querySelector(`#${def}`).style = "display:none";
+        document.querySelector("#edit_btn").style = "display:none";
+        console.log("edited");
+    }
+
+    function exit_edit(def){
+        document.querySelector(`.${def}_edit`).style = "display:none";
+        document.querySelector(`#${def}`).style = "display:block";
+        document.querySelector("#edit_btn").style = "display:block";
+    }
+
+    function del (def) {
+        console.log("del");
+        exit_edit(def);
+    }
+</script>
+
+{% endblock %}
 
 {% block content %}
 <p>{{ username }}</p>
@@ -7,9 +29,22 @@
 <div class="topic">
     <ul>
         {% for def in topic.data %}
-            <li>
+            <li id="{{ def }}">
                 {{ def }} -> {{ topic.data[def] }}
             </li>
+            <button onclick="edit('{{ def }}')" id = "edit_btn">Edit</button>
+            <div class="{{ def }}_edit" id="edit_div" style="display: none;">
+                <form action="{{ url_for('views.edit_def', topic_id=topic.id, def=def) }}" method="POST" onsubmit="exit_edit('{{ def }}')">
+                    <input type="text" name="new_key" value="{{ def }}">
+                    <input type="text" name="new_value" value="{{ topic.data[def] }}">
+                    <input 
+                        type="submit" 
+                        value="Save" 
+                        onclick="exit_edit('{{ def }}')">
+                </form>
+                <button onclick="exit_edit('{{ def }}')">Cancel</button>
+                <button onclick="del('{{ def }}')">✕</button>
+            </div>
         {% endfor %}
     </ul>
 </div>

@@ -3,6 +3,8 @@
     <head>
         <title>{% block title %}{% endblock %} - Define-IT</title>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+        {% block head %}
+        {% endblock %}
     </head>
     <body>
         {% with messages = get_flashed_messages(with_categories=true) %}
