@@ -16,7 +16,14 @@ def check_user(userid, folderid=None, topic_id=None):
         folder = Folder.query.filter_by(id=topic.folderid).first()
         if not topic or not folder or folder.userid != userid:
             return False 
-    return True      
+    return True
+
+def verify_topic(userid, topic_id):
+    topic = Topic.query.filter_by(id=topic_id).first()
+    folder = Folder.query.filter_by(id=topic.folderid).first()
+    if not topic or not folder or folder.userid != userid:
+        return False 
+    return True
 
 @views.route("/")
 @login_required
@@ -83,9 +90,7 @@ def add_data(topic_id):
     value = request.form.get("value")
 
     topic = Topic.query.filter_by(id=topic_id).first()
-    folder_id = topic.folderid
-    folder = Folder.query.filter_by(id=folder_id).first()
-    if current_user.id != folder.userid:
+    if not verify_topic(current_user.id, topic_id):
         return redirect(url_for("auth.logout"))
 
     if key in topic.data:
@@ -109,9 +114,7 @@ def edit_def():
     new_value = request.form.get("new_value")
 
     topic = Topic.query.filter_by(id=topic_id).first()
-    folder_id = topic.folderid
-    folder = Folder.query.filter_by(id=folder_id).first()
-    if current_user.id != folder.userid:
+    if not verify_topic(current_user.id, topic_id):
         return redirect(url_for("auth.logout"))
 
     data = topic.data 
@@ -122,6 +125,25 @@ def edit_def():
     db.session.commit()
 
     return redirect(url_for("views.topic", topic_id=topic_id))
+
+@views.route("/delete_def", methods=["POST"])
+def delete_def():
+    topic_id = request.args.get("topic_id")
+    definition = request.args.get("def")
+
+    if not verify_topic(current_user.id, topic_id):
+        return redirect(url_for("auth.logout"))
+
+    topic = Topic.query.filter_by(id=topic_id).first()
+    data = topic.data
+    data.pop(definition)
+    Topic.query.filter_by(id=topic_id).update(dict(data=data))
+    db.session.commit()
+
+    return redirect(url_for("views.topic", topic_id=topic_id))
+
+
+
 
 
 

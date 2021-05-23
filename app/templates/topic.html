@@ -14,11 +14,6 @@
         document.querySelector(`#${def}`).style = "display:block";
         document.querySelector("#edit_btn").style = "display:block";
     }
-
-    function del (def) {
-        console.log("del");
-        exit_edit(def);
-    }
 </script>
 
 {% endblock %}
@@ -43,7 +38,9 @@
                         onclick="exit_edit('{{ def }}')">
                 </form>
                 <button onclick="exit_edit('{{ def }}')">Cancel</button>
-                <button onclick="del('{{ def }}')">✕</button>
+                <form action="{{ url_for('views.delete_def', def=def, topic_id=topic.id ) }}" method="POST">
+                    <input type="submit" value="✕" onclick="exit_edit('{{ def }}')">
+                </form>
             </div>
         {% endfor %}
     </ul>
