@@ -28,6 +28,11 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+
+        {% if username %}
+            <p>{{ username }}</p>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% endif %}
         {% block content %}{% endblock %}
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

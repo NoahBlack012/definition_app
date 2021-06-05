@@ -1,10 +1,31 @@
 {% extends 'layout.html' %}
 {% block title %}Quiz{% endblock %}
 {% block head %}
+<meta id="quiz" name="quiz" content="{{quiz}}">
+<meta id="question" name="question" content="1">
+<!-- <script src="{{ url_for('static', filename='js/quiz.js') }}"></script> -->
 {% endblock %}
 
 {% block content %}
-<p>{{ username }}</p>
 <h1>Quiz page</h1>
 <h1>{{ topic_id }}</h1>
+<div class="quiz">
+    <div class="question">
+        <div class="question_number">{{ question_number }}</div>
+        <div class="question_title">{{ question['question'] }}</div>
+        <div class="answers">
+            <form class="form_{{ index }}">
+                {% for answer in question['answers'] %}
+                    <input type="radio" name="answer" id="option{{ loop.index }}" value="{{ answer }}">
+                    <label for="option{{ loop.index }}">{{ answer }}</label>
+                {% endfor %}
+                {% if not last_question %}
+                    <button><a href="{{ url_for('views.quiz', topic_id=topic_id, question_number=question_number) }}">Next Question</a></button>
+                {% else %}
+                    <button>Submit Quiz</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

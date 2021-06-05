@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask.globals import session
 from flask.helpers import flash
 from .models import User, Topic, Folder
 from flask_login import login_required, current_user
 from . import db
+
+from .create_quiz import create_quiz
 
 views = Blueprint("views", __name__, static_folder="static", template_folder="templates")
 
@@ -41,12 +44,41 @@ def folder(folder_id):
 @login_required
 def topic(topic_id):
     topic = Topic.query.filter_by(id=topic_id).first()
+    if not verify_topic(current_user.id, topic_id):
+        return redirect(url_for("views.home"))
     return render_template("topic.html", topic=topic, username=current_user.username)
 
-@views.route("/quiz/<int:topic_id>")
+@views.route("/quiz/<int:topic_id>", methods=["GET", "POST"])
 @login_required
 def quiz(topic_id):
-    return render_template("quiz.html", topic_id=topic_id, username=current_user.username)
+    question_number = int(request.args.get("question_number"))
+    if question_number == 0:
+        topic = Topic.query.filter_by(id=topic_id).first()
+        if not verify_topic(current_user.id, topic_id):
+            return redirect(url_for("views.home"))
+        
+        data = topic.data
+        if len(data) < 4:
+            flash("To generate a quiz, you must add at least four definitions to the topic", "error")
+            return redirect(url_for("views.topic", topic_id=topic_id))
+        quiz = create_quiz(data, len(data))
+        session["question_number"] = 0
+        session["final_question"] = len(quiz) - 1
+        session["quiz"] = quiz
+        last_question = False
+    elif question_number == session["final_question"]:
+        last_question = True 
+    else:
+        last_question = False
+    
+    session["question_number"] = question_number
+    return render_template("quiz.html", 
+            topic_id=topic_id, 
+            username=current_user.username, 
+            question=session["quiz"][question_number],
+            question_number=question_number+1,
+            last_question=last_question
+            )
 
 
 @views.route("/add_folder", methods=["POST"])
@@ -74,7 +106,7 @@ def add_topic(folder_id):
     db_topic = Topic.query.filter_by(title=title, folderid=folder_id).first()
     if db_topic:
         flash("Sorry, that topic name has already been used", category="error")
-        return redirect(url_for(f"views.folder", folderid=folder_id))
+        return redirect(url_for("views.folder", folderid=folder_id))
 
 
     new_topic = Topic(title=title, folderid=folder_id, data={})

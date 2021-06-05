@@ -65,6 +65,8 @@ def login():
         else:
             # Flash alert - incorrect password
             flash("The username or password you entered is incorrect", "error")
+    elif not current_user.is_authenticated:
+        return render_template("login.html")
     return redirect(url_for("views.home"))
 
 @auth.route("/logout")
