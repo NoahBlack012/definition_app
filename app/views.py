@@ -53,6 +53,7 @@ def topic(topic_id):
 def quiz(topic_id):
     question_number = int(request.args.get("question_number"))
     if question_number == 0:
+        print ("GHUIBYIBHB")
         topic = Topic.query.filter_by(id=topic_id).first()
         if not verify_topic(current_user.id, topic_id):
             return redirect(url_for("views.home"))
@@ -82,26 +83,71 @@ def quiz(topic_id):
             last_question=last_question
             )
 
-@views.route("/quiz/record_answer", methods=["POST"])
+@views.route("/record_answer", methods=["POST"])
 @login_required
 def record_answer():
     answer = request.form.get("answer")
     correct_answer = session["quiz"][session["question_number"]]["correct_answer"]
+    options = session["quiz"][session["question_number"]]["answers"]
+    question = session["quiz"][session["question_number"]]["question"]
     if answer == correct_answer:
-        session["answers"].append({
-            "correct": True,
-            "correct_answer": correct_answer 
-        })
+        correct = True
     else:
-        session["answers"].append({
-            "correct": False,
-            "correct_answer": correct_answer 
+        correct = False
+    new_answers = session["answers"]
+    new_answers.append({
+            "question": question,
+            "correct": correct,
+            "correct_answer": correct_answer, 
+            "answer": answer,
+            "options": options
         })
-    print (session["answers"])
+    session["answers"] = new_answers
+
     return redirect(url_for("views.quiz", topic_id=session["topic_id"], question_number=session["question_number"]+1))
     
 
+@views.route("/quiz_results", methods=["POST"])
+@login_required
+def quiz_results():
+    answer = request.form.get("answer")
+    print (session["question_number"])
+    correct_answer = session["quiz"][session["question_number"]]["correct_answer"]
+    options = session["quiz"][session["question_number"]]["answers"]
+    question = session["quiz"][session["question_number"]]["question"]
+    if answer == correct_answer:
+        correct = True
+    else:
+        correct = False
+    
+    new_answers = session["answers"]
+    new_answers.append({
+            "question": question,
+            "correct": correct,
+            "correct_answer": correct_answer, 
+            "answer": answer,
+            "options": options
+        })
+    session["answers"] = new_answers
 
+    total = len(session["answers"])
+    correct = 0
+    for i in session["answers"]:
+        if i["correct"]:
+            correct += 1
+
+    percentage = str(correct / total * 100)
+    if len(percentage) > 3:
+        percentage = percentage[:3]
+    
+    if percentage[-1] == ".":
+        percentage = percentage[:-1]
+
+    return render_template("results.html", 
+        percentage=percentage,
+        username=current_user.username,
+        quiz=session["answers"]
+        )
 
 @views.route("/add_folder", methods=["POST"])
 @login_required

@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block title %}Results{% endblock %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<h1>Results page</h1>
+<div class="results">
+    <h4>{{ percentage }}%</h4>
+    {% for question in quiz %}
+        <div class="question">
+            <h3>{{ question['question'] }}</h3>
+            {% if question['correct'] %}
+                {% for option in question['options'] %}
+                    {% if option == question['correct_answer'] %}
+                        <p style="color: green;">{{ option }}</p>
+                    {% else %}
+                        <p>{{ option }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% for option in question['options'] %}
+                    {% if option == question['correct_answer'] %}
+                        <p style="color: green;">{{ option }}</p>
+                    {% elif option == question['answer'] %}
+                        <p style="color: red;">{{ option }}</p>
+                    {% else %}
+                        <p>{{ option }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

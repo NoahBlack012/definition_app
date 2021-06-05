@@ -1,9 +1,6 @@
 {% extends 'layout.html' %}
 {% block title %}Quiz{% endblock %}
 {% block head %}
-<meta id="quiz" name="quiz" content="{{quiz}}">
-<meta id="question" name="question" content="1">
-<!-- <script src="{{ url_for('static', filename='js/quiz.js') }}"></script> -->
 {% endblock %}
 
 {% block content %}
@@ -14,17 +11,23 @@
         <div class="question_number">{{ question_number }}</div>
         <div class="question_title">{{ question['question'] }}</div>
         <div class="answers">
-            <form class="form_{{ index }}" action="{{ url_for('views.record_answer') }}" method="POST">
-                {% for answer in question['answers'] %}
-                    <input type="radio" name="answer" id="answer" value="{{ answer }}">
-                    <label for="option{{ loop.index }}">{{ answer }}</label>
-                {% endfor %}
-                {% if not last_question %}
+            {% if not last_question %}
+                <form class="form_{{ index }}" action="{{ url_for('views.record_answer') }}" method="POST">
+                    {% for answer in question['answers'] %}
+                        <input type="radio" name="answer" id="answer" value="{{ answer }}">
+                        <label for="option{{ loop.index }}">{{ answer }}</label>
+                    {% endfor %}
                     <input type="submit" value="Next Question">
-                {% else %}
+                </form>
+            {% else %}
+                <form class="form_{{ index }}" action="{{ url_for('views.quiz_results') }}" method="POST">
+                    {% for answer in question['answers'] %}
+                        <input type="radio" name="answer" id="answer" value="{{ answer }}">
+                        <label for="option{{ loop.index }}">{{ answer }}</label>
+                    {% endfor %}
                     <input type="submit" value="Submit Quiz">
-                {% endif %}
-            </form>
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>
