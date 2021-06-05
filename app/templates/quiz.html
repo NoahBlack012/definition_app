@@ -14,15 +14,15 @@
         <div class="question_number">{{ question_number }}</div>
         <div class="question_title">{{ question['question'] }}</div>
         <div class="answers">
-            <form class="form_{{ index }}">
+            <form class="form_{{ index }}" action="{{ url_for('views.record_answer') }}" method="POST">
                 {% for answer in question['answers'] %}
-                    <input type="radio" name="answer" id="option{{ loop.index }}" value="{{ answer }}">
+                    <input type="radio" name="answer" id="answer" value="{{ answer }}">
                     <label for="option{{ loop.index }}">{{ answer }}</label>
                 {% endfor %}
                 {% if not last_question %}
-                    <button><a href="{{ url_for('views.quiz', topic_id=topic_id, question_number=question_number) }}">Next Question</a></button>
+                    <input type="submit" value="Next Question">
                 {% else %}
-                    <button>Submit Quiz</button>
+                    <input type="submit" value="Submit Quiz">
                 {% endif %}
             </form>
         </div>

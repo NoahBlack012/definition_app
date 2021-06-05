@@ -65,6 +65,8 @@ def quiz(topic_id):
         session["question_number"] = 0
         session["final_question"] = len(quiz) - 1
         session["quiz"] = quiz
+        session["answers"] = []
+        session["topic_id"] = topic_id
         last_question = False
     elif question_number == session["final_question"]:
         last_question = True 
@@ -79,6 +81,26 @@ def quiz(topic_id):
             question_number=question_number+1,
             last_question=last_question
             )
+
+@views.route("/quiz/record_answer", methods=["POST"])
+@login_required
+def record_answer():
+    answer = request.form.get("answer")
+    correct_answer = session["quiz"][session["question_number"]]["correct_answer"]
+    if answer == correct_answer:
+        session["answers"].append({
+            "correct": True,
+            "correct_answer": correct_answer 
+        })
+    else:
+        session["answers"].append({
+            "correct": False,
+            "correct_answer": correct_answer 
+        })
+    print (session["answers"])
+    return redirect(url_for("views.quiz", topic_id=session["topic_id"], question_number=session["question_number"]+1))
+    
+
 
 
 @views.route("/add_folder", methods=["POST"])
