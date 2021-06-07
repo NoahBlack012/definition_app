@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block title %}Quiz{% endblock %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<h1>Not Found</h1>
+<h1>{{ topic_id }}</h1>
+<div class="error">
+    <p>Hey! This page has disappeared to the shadow realm</p>
+    <p><a href="{{ url_for('views.home') }}">Click here to go somewhere better</a></p>
+</div>
+{% endblock %}

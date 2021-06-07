@@ -11,6 +11,7 @@
         <div class="question">
             <h3>{{ question['question'] }}</h3>
             {% if question['correct'] %}
+                <p>1/1</p>
                 {% for option in question['options'] %}
                     {% if option == question['correct_answer'] %}
                         <p style="color: green;">{{ option }}</p>
@@ -19,6 +20,7 @@
                     {% endif %}
                 {% endfor %}
             {% else %}
+                <p>0/1</p>
                 {% for option in question['options'] %}
                     {% if option == question['correct_answer'] %}
                         <p style="color: green;">{{ option }}</p>

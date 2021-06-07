@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, abort
 from flask.globals import session
 from flask.helpers import flash
 from .models import User, Topic, Folder
@@ -28,6 +28,11 @@ def verify_topic(userid, topic_id):
         return False 
     return True
 
+# 404 not found error handling
+@views.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 @views.route("/")
 @login_required
 def home():
@@ -53,7 +58,6 @@ def topic(topic_id):
 def quiz(topic_id):
     question_number = int(request.args.get("question_number"))
     if question_number == 0:
-        print ("GHUIBYIBHB")
         topic = Topic.query.filter_by(id=topic_id).first()
         if not verify_topic(current_user.id, topic_id):
             return redirect(url_for("views.home"))
@@ -68,12 +72,15 @@ def quiz(topic_id):
         session["quiz"] = quiz
         session["answers"] = []
         session["topic_id"] = topic_id
-        last_question = False
-    elif question_number == session["final_question"]:
-        last_question = True 
-    else:
-        last_question = False
-    
+
+    last_question = False
+    try:
+        if question_number == session["final_question"]:
+            last_question = True 
+    except KeyError:
+        abort(404)
+
+
     session["question_number"] = question_number
     return render_template("quiz.html", 
             topic_id=topic_id, 
@@ -111,7 +118,6 @@ def record_answer():
 @login_required
 def quiz_results():
     answer = request.form.get("answer")
-    print (session["question_number"])
     correct_answer = session["quiz"][session["question_number"]]["correct_answer"]
     options = session["quiz"][session["question_number"]]["answers"]
     question = session["quiz"][session["question_number"]]["question"]
@@ -143,10 +149,18 @@ def quiz_results():
     if percentage[-1] == ".":
         percentage = percentage[:-1]
 
+    quiz = session["answers"]
+    ## Reset session variables ##
+    session.pop("answers")
+    session.pop("question_number")
+    session.pop("quiz")
+    session.pop("final_question")
+    session.pop("topic_id")
+
     return render_template("results.html", 
         percentage=percentage,
         username=current_user.username,
-        quiz=session["answers"]
+        quiz=quiz
         )
 
 @views.route("/add_folder", methods=["POST"])

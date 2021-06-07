@@ -15,11 +15,11 @@ def create_mc(concept, definition, data_values):
     return question
 
 def create_quiz(data, length):
+    """Function that takes in data of topic and length of quiz and generates a array of dicts (Questions) to generate a quiz"""
     data_keys = list(data.keys())
     data_values = list(data.values())
     quiz = []
     indexes_used = []
-    print (length)
     for i in range(length):
         try:
             while index in indexes_used:
