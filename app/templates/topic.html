@@ -2,6 +2,14 @@
 {% block title %}Topic Name{% endblock %}
 {% block head %}
 <script>
+    var flashcard_count = 1;
+    var flashcard_flipped = false;
+    var data = "{{ topic.data }}"
+    data = data.split(" ")
+    data_length = data.length 
+    data_length = (data_length - data_length % 2) / 2
+    var last_index = data_length - 1;
+
     function edit(def){
         document.querySelector(`.${def}_edit`).style = "display:block";
         document.querySelector(`#${def}`).style = "display:none";
@@ -13,6 +21,47 @@
         document.querySelector(`.${def}_edit`).style = "display:none";
         document.querySelector(`#${def}`).style = "display:block";
         document.querySelector("#edit_btn").style = "display:block";
+    }
+
+    function open_flashcards(){
+        document.querySelector(`#card_${flashcard_count}`).style = "display:block";
+        document.querySelector(`#cardfront_${flashcard_count}`).style = "display:block";
+        document.querySelector(`#cardback_${flashcard_count}`).style = "display:none";
+        flashcard_flipped = false;
+    }
+
+    function close_flashcards(){
+        document.querySelector(`#card_${flashcard_count}`).style = "display:none";
+    }
+
+    function next_flashcard(){
+        document.querySelector(`#card_${flashcard_count}`).style = "display:none";
+        flashcard_count += 1; 
+        document.querySelector(`#card_${flashcard_count}`).style = "display:block";
+        document.querySelector(`#cardfront_${flashcard_count}`).style = "display:block";
+        document.querySelector(`#cardback_${flashcard_count}`).style = "display:none";
+        flashcard_flipped = false;
+    }
+
+    function previous_flashcard(){
+        document.querySelector(`#card_${flashcard_count}`).style = "display:none";
+        flashcard_count -= 1; 
+        document.querySelector(`#card_${flashcard_count}`).style = "display:block";
+        document.querySelector(`#cardfront_${flashcard_count}`).style = "display:block";
+        document.querySelector(`#cardback_${flashcard_count}`).style = "display:none";
+        flashcard_flipped = false;
+    }
+
+    function flip_flashcard(){
+        if (flashcard_flipped){
+            document.querySelector(`#cardfront_${flashcard_count}`).style = "display:block";
+            document.querySelector(`#cardback_${flashcard_count}`).style = "display:none";
+            flashcard_flipped = false;
+        }else{
+            document.querySelector(`#cardfront_${flashcard_count}`).style = "display:none";
+            document.querySelector(`#cardback_${flashcard_count}`).style = "display:block";
+            flashcard_flipped = true;
+        }       
     }
 </script>
 
@@ -49,6 +98,23 @@
             </div>
         {% endfor %}
     </ul>
+
+    <button onclick="open_flashcards()">View Flashcards</button>
+    <div class="flashcards">
+        {% for def in topic.data %}
+            <div class="card" id="card_{{ loop.index }}" style="display: none; background-color: green;">
+                <button onclick="close_flashcards()">✕</button>
+                {% if not loop.first %}
+                <button onclick="previous_flashcard()">Previous</button>
+                {% endif %}
+                {% if not loop.last %}
+                    <button onclick="next_flashcard()">Next</button>
+                {% endif %}
+                <div class="card_front" id="cardfront_{{ loop.index }}" style="display: none; background-color: greenyellow; cursor: pointer;" onclick="flip_flashcard()">{{ def }}</div>
+                <div class="card_back" id="cardback_{{ loop.index }}" style="display: none; background-color: hotpink; cursor: pointer;" onclick="flip_flashcard()">{{ topic.data[def] }}</div>
+            </div> 
+        {% endfor %}
+    </div>
 </div>
 
 <form action="{{ url_for('views.add_data', topic_id=topic.id) }}", method="POST">

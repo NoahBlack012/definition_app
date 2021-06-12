@@ -1,32 +1,14 @@
 from flask import Blueprint, render_template, request, redirect, url_for, abort
 from flask.globals import session
 from flask.helpers import flash
-from .models import User, Topic, Folder
+from .models import Topic, Folder
 from flask_login import login_required, current_user
 from . import db
 
 from .create_quiz import create_quiz
+from .helpers import verify_topic, check_user
 
 views = Blueprint("views", __name__, static_folder="static", template_folder="templates")
-
-def check_user(userid, folderid=None, topic_id=None):
-    if folderid:
-        folder = Folder.query.filter_by(id=folderid).first()
-        if not folder or folder.userid != userid:
-            return False
-    else:
-        topic = Topic.query.filter_by(id=topic_id).first()
-        folder = Folder.query.filter_by(id=topic.folderid).first()
-        if not topic or not folder or folder.userid != userid:
-            return False 
-    return True
-
-def verify_topic(userid, topic_id):
-    topic = Topic.query.filter_by(id=topic_id).first()
-    folder = Folder.query.filter_by(id=topic.folderid).first()
-    if not topic or not folder or folder.userid != userid:
-        return False 
-    return True
 
 # 404 not found error handling
 @views.errorhandler(404)
