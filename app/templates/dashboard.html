@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+{% block title %}Home{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<script>
+    var expanded = {}
+    function expand(folder_id){
+        if (!folder_id in expanded){
+            expanded[folder_id] = false
+        }
+        let folder_expanded = expanded[folder_id];
+        if (folder_expanded){
+            document.querySelector(`#folder_expanded_${folder_id}`).style = "display:none";
+            document.querySelector(`.expand_btn_${folder_id}`).innerHTML = "⯈"
+            expanded[folder_id] = false
+        }else{
+            document.querySelector(`#folder_expanded_${folder_id}`).style = "display:block";
+            document.querySelector(`.expand_btn_${folder_id}`).innerHTML = "▼"
+            expanded[folder_id] = true
+        }
+    }
+
+    function open_new_folder(){
+        document.querySelector(".create_folder_background").style = "display:flex";
+    }
+
+    function close_new_folder(){
+        document.querySelector(".create_folder_background").style = "display:none";
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Home page</h1>
+
+<div id="folders">
+    <div class="link_btn" onclick="open_new_folder()">
+        New Folder
+    </div>
+    <div class="folder_names">
+        {% for folder in folders %}
+        <div class="link_btn">
+            <button class="expand_btn_{{ folder.id }}" onclick="expand('{{ folder.id }}')" id="sub_btn">⯈</button>
+            <a href="{{ url_for('views.folder', folder_id=folder.id) }}" id="btn_link">
+                {{ folder.name }}
+            </a>
+        </div>
+        <div class="folder_expanded" id="folder_expanded_{{ folder.id }}" style="display: none;" >
+            {% for topic in folder.subtopics %}
+            <div class="link_btn" id="topic">
+                <a id="topic_btn" href="{{ url_for('views.topic', topic_id=topic.id) }}">
+                    {{ topic.title }}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="create_folder_background">
+    <div>
+        <form action="{{ url_for('views.add_folder') }}" method="POST" class="folder_form">
+            <input type="text" name="name" id="name" placeholder="Folder name">
+            <input type="submit" value="Create Folder" onclick="close_new_folder()">
+        </form>
+    </div>
+</div>
+{% endblock %}

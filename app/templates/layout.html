@@ -3,6 +3,7 @@
     <head>
         <title>{% block title %}{% endblock %} - Define-IT</title>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
         {% block head %}
         {% endblock %}
     </head>

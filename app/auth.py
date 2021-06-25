@@ -59,15 +59,15 @@ def login():
         db_password = db_user.password
         if bcrypt.checkpw(password.encode("utf-8"), db_password.encode("utf-8")):
             flash("Login successful", "success")
-            # Login and return home page
+            # Login and return dashboard page
             login_user(db_user, remember=True)
-            return redirect(url_for("views.home"))
+            return redirect(url_for("views.dashboard"))
         else:
             # Flash alert - incorrect password
             flash("The username or password you entered is incorrect", "error")
     elif not current_user.is_authenticated:
         return render_template("login.html")
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.dashboard"))
 
 @auth.route("/logout")
 @login_required
@@ -118,6 +118,8 @@ def signup():
                 except Exception:
                     flash("Sorry, there was an error. Try again later", "error")
                     return render_template("signup.html")
-                # Flash alert - user created, redirect to home
+                # Flash alert - user created, redirect to dashboard
                 flash("Account Created", "success")
+                login_user(new_user, remember=True)
+                return redirect(url_for("views.dashboard"))
     return render_template("signup.html")

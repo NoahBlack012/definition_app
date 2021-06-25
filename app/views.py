@@ -17,9 +17,9 @@ def page_not_found(e):
 
 @views.route("/")
 @login_required
-def home():
+def dashboard():
     folders = Folder.query.filter_by(userid=current_user.id).all()
-    return render_template("home.html", folders=folders, username=current_user.username)
+    return render_template("dashboard.html", folders=folders, username=current_user.username)
 
 @views.route("/folder/<int:folder_id>")
 @login_required
@@ -32,7 +32,7 @@ def folder(folder_id):
 def topic(topic_id):
     topic = Topic.query.filter_by(id=topic_id).first()
     if not verify_topic(current_user.id, topic_id):
-        return redirect(url_for("views.home"))
+        return redirect(url_for("views.dashboard"))
     return render_template("topic.html", topic=topic, username=current_user.username)
 
 @views.route("/quiz/<int:topic_id>", methods=["GET", "POST"])
@@ -42,7 +42,7 @@ def quiz(topic_id):
     if question_number == 0:
         topic = Topic.query.filter_by(id=topic_id).first()
         if not verify_topic(current_user.id, topic_id):
-            return redirect(url_for("views.home"))
+            return redirect(url_for("views.dashboard"))
         
         data = topic.data
         if len(data) < 4:
@@ -152,13 +152,13 @@ def add_folder():
     db_folder = Folder.query.filter_by(name=name, userid=current_user.id).first()
     if db_folder:
         flash("Sorry, that folder name has already been used", category="error")
-        return redirect(url_for("views.home"))
+        return redirect(url_for("views.dashboard"))
 
     new_folder = Folder(userid=current_user.id, name=name)
     db.session.add(new_folder)
     db.session.commit()
     flash("Folder created", category="success")
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.dashboard"))
 
 @views.route("/add_topic/<int:folder_id>", methods=["POST"])
 @login_required

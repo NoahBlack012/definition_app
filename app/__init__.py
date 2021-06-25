@@ -13,6 +13,7 @@ def create_app():
     #app.config["SESSION_PERMANENT"] = True
     #app.config["SESSION_TYPE"] = "filesystem"
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URI"]
+    app.config['TEMPLATE_AUTO_RELOAD'] = True
     db.init_app(app)
     #Session(app)
     #app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
