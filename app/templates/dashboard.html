@@ -59,9 +59,12 @@
 </div>
 <div class="create_folder_background">
     <div>
+        <div class="exit_new_folder">
+            <button class="input" id="form_btn" onclick="close_new_folder()">✕</button>
+        </div>
         <form action="{{ url_for('views.add_folder') }}" method="POST" class="folder_form">
-            <input type="text" name="name" id="name" placeholder="Folder name">
-            <input type="submit" value="Create Folder" onclick="close_new_folder()">
+            <input class="input" type="text" name="name" id="form_input" placeholder="Folder name">
+            <input class="input" type="submit" id="form_btn" value="Create Folder" onclick="close_new_folder()">
         </form>
     </div>
 </div>
