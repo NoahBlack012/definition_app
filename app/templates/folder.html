@@ -34,7 +34,7 @@
                 <button class="input" id="form_btn" onclick="close_new_topic()">✕</button>
             </div>
             <form class="topic_form" action="{{ url_for('views.add_topic', folder_id=folder.id) }}" method="POST">
-                <input type="text" name="title" class="input" id="form_input" placeholder="Topic Name">
+                <input type="text" name="title" class="input" id="form_input" placeholder="Topic Name" autocomplete="off">
                 <input type="submit" value="Create Topic" class="input" id="form_btn">
             </form>
         </div>

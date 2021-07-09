@@ -5,10 +5,10 @@
 
 {% block content %}
 <form action="{{ url_for('auth.signup') }}" method="POST">
-    <input type="text" name="email" id="email" placeholder="Email"><br>
-    <input type="text" name="username" id="username" placeholder="Username"><br>
-    <input type="password" name="password" id="password" placeholder="Password"><br>
-    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password"><br>
+    <input type="text" name="email" id="email" placeholder="Email" autocomplete="off"><br>
+    <input type="text" name="username" id="username" placeholder="Username" autocomplete="off"><br>
+    <input type="password" name="password" id="password" placeholder="Password" autocomplete="off"><br>
+    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" autocomplete="off"><br>
     <input type="submit" value="Sign Up">
 </form>
 {% endblock %}

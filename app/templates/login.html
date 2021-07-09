@@ -5,8 +5,8 @@
 
 {% block content %}
 <form action="{{ url_for('auth.login') }}" method="POST">
-    <input type="text" name="username" id="username" placeholder="Username"><br>
-    <input type="password" name="password" id="password" placeholder="Password"><br>
+    <input type="text" name="username" id="username" placeholder="Username" autocomplete="off"><br>
+    <input type="password" name="password" id="password" placeholder="Password" autocomplete="off"><br>
     <input type="submit" value="Login">
 </form>
 {% endblock %}
