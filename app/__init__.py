@@ -14,14 +14,15 @@ def create_app():
     #app.config["SESSION_TYPE"] = "filesystem"
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URI"]
     app.config['TEMPLATE_AUTO_RELOAD'] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     #Session(app)
     #app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
-    #CORS(app)
+    #CORS(app=app)
 
     from .views import views
     from .auth import auth
-    from .models import User, Folder, Topic
+    from .models import User #, Folder, Topic
 
     # Register Blueprints
     app.register_blueprint(views, url_prefix="/")

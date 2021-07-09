@@ -1,29 +1,43 @@
 {% extends 'layout.html' %}
 {% block title %}{{ folder.name }}{% endblock %}
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/folder.css') }}">
+
+<script>
+    function open_new_topic(){
+        document.querySelector(".create_topic_background").style = "display:flex";
+    }
+    
+    function close_new_topic(){
+        document.querySelector(".create_topic_background").style = "display:none";
+    }
+    </script>
 {% endblock %}
 
 {% block content %}
 <br>
-<a href="{{ url_for('views.dashboard') }}">Homepage</a>
-<h1>{{ folder.name }}</h1>
-
-<div class="folder">
-    <ul>
-        {% for topic in folder.subtopics %}
-            <li>
-                <a href="{{ url_for('views.topic', topic_id=topic.id) }}">{{ topic.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+<div class="link_btn" onclick="open_new_topic()" id="open_new_topic">
+    New Topic
+</div>
+<div class="folder_items">
+    {% for topic in folder.subtopics %}
+        <div class="folder_item" id="form_btn">
+            <a href="{{ url_for('views.topic', topic_id=topic.id) }}">{{ topic.title }}</a>
+        </div>
+    {% endfor %}
 </div>
 
-<form action="{{ url_for('views.add_topic', folder_id=folder.id) }}" method="POST">
-    <input type="text" name="title" id="title" placeholder="Topic Name">
-    <input type="submit" value="Create Topic">
-</form>
+<div class="create_topic_background">
+    <div>
+        <div class="topic_form">
+            <div class="exit_new_topic">
+                <button class="input" id="form_btn" onclick="close_new_topic()">✕</button>
+            </div>
+            <form class="topic_form" action="{{ url_for('views.add_topic', folder_id=folder.id) }}" method="POST">
+                <input type="text" name="title" class="input" id="form_input" placeholder="Topic Name">
+                <input type="submit" value="Create Topic" class="input" id="form_btn">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
-
-<script>
-
-</script>

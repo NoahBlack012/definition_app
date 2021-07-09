@@ -71,7 +71,6 @@
 <br>
 <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
 <a href="{{ url_for('views.folder', folder_id=topic.folderid) }}">Go Back</a>
-<h1>{{ topic.title }}</h1>
 <form action="{{ url_for('views.quiz', topic_id=topic.id, question_number=0) }}" method="POST">
     <input type="submit" value="Generate Quiz">
 </form>

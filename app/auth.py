@@ -3,47 +3,10 @@ from flask.helpers import url_for
 from flask_login import login_user, login_required, logout_user, current_user
 import bcrypt
 from .models import User
-from string import punctuation
 from . import db
+from .helpers import check_pw_conditions, valid_email
 
 auth = Blueprint("auth", __name__, static_folder="static", template_folder="templates")
-
-def check_pw_conditions(pw):
-    symbol = False
-    capital = False 
-    number = False
-    symbols = list(punctuation)
-    capitals = [chr(i) for i in range(65, 91)]
-    numbers = [str(i) for i in range(0, 10)]
-    for i in pw:
-        if i in symbols:
-            symbol = True 
-        if i in capitals:
-            capital = True 
-        if i in numbers:
-            number = True 
-        
-        if symbol and capital and number:
-            return True 
-    return False
-
-def valid_email(email):
-    if "@" not in email:
-        return False 
-    email = email.split("@")
-    if len(email) != 2:
-        return False
-    
-    if "." not in email[1]:
-        return False 
-    
-    if not email[0] or not email[1]:
-        return False 
-
-    after_at = email[1].split(".")
-    if not after_at[0] or not after_at[1]:
-        return False
-    return True
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
@@ -54,7 +17,7 @@ def login():
         if not db_user:
             # Flash alert - user does not exist
             flash("The username or password you entered is incorrect", "error")
-            return render_template("login.html")
+            return render_template("login.html", title="Login")
         
         db_password = db_user.password
         if bcrypt.checkpw(password.encode("utf-8"), db_password.encode("utf-8")):
@@ -66,7 +29,7 @@ def login():
             # Flash alert - incorrect password
             flash("The username or password you entered is incorrect", "error")
     elif not current_user.is_authenticated:
-        return render_template("login.html")
+        return render_template("login.html", title="Login")
     return redirect(url_for("views.dashboard"))
 
 @auth.route("/logout")
@@ -84,10 +47,10 @@ def signup():
         confirm_password = request.form.get("confirm_password")
         if not email or not username or not password or not confirm_password:
             flash("Please fill out all required fields", "error")
-            return render_template("signup.html")
+            return render_template("signup.html", title="Signup")
         if " " in email or " " in username:
             flash("Please do not include spaces in the username or email", "error")
-            return render_template("signup.html")
+            return render_template("signup.html", title="Signup")
         user = User.query.filter_by(username=username).first()
         email_user = User.query.filter_by(email=email).first()
 
@@ -102,7 +65,7 @@ def signup():
                 flash("The passwords entered do not match", "error")
             elif len(password) < 7:
                 # Flash alert - password must be 7 characters
-                flash("The password must be at least seven characters", "error")
+                flash("The password must be at least seven characters long", "error")
             elif not check_pw_conditions(password):
                 # Flash alert - password must contain symbol, number, and capital
                 flash("The password must contain a special symbol, a number, and a capital letter", "error")
@@ -117,9 +80,9 @@ def signup():
                     db.session.commit()
                 except Exception:
                     flash("Sorry, there was an error. Try again later", "error")
-                    return render_template("signup.html")
+                    return render_template("signup.html", title="Signup")
                 # Flash alert - user created, redirect to dashboard
                 flash("Account Created", "success")
                 login_user(new_user, remember=True)
                 return redirect(url_for("views.dashboard"))
-    return render_template("signup.html")
+    return render_template("signup.html", title="Signup")

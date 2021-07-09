@@ -8,6 +8,22 @@
         {% endblock %}
     </head>
     <body>
+        <div class="nav">
+            <div class="page_title">
+                <h1 class="title">
+                    {{ title }}
+                </h1>
+            </div>
+            <div class="nav_links">
+                {% if not username %}
+                    <a href="{{ url_for('auth.signup') }}" class="nav_btn">Signup</a>
+                    <a href="{{ url_for('auth.login') }}" class="nav_btn">Login</a>
+                {% else %}
+                    <a href="{{ url_for('views.dashboard') }}" class="nav_btn">Dashboard</a>
+                    <a href="{{ url_for('auth.logout') }}" class="nav_btn">Logout</a>
+                {% endif %}
+            </div>
+        </div>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -29,11 +45,6 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-
-        {% if username %}
-            <p>{{ username }}</p>
-            <a href="{{ url_for('auth.logout') }}">Logout</a>
-        {% endif %}
         {% block content %}{% endblock %}
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

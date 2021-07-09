@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% block title %}Home{% endblock %}
+{% block title %}Dashboard{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 <script>
@@ -31,8 +31,6 @@
 {% endblock %}
 
 {% block content %}
-<h1>Home page</h1>
-
 <div id="folders">
     <div class="link_btn" onclick="open_new_folder()">
         New Folder
@@ -56,16 +54,19 @@
         </div>
         {% endfor %}
     </div>
+    <hr>
 </div>
 <div class="create_folder_background">
     <div>
-        <div class="exit_new_folder">
-            <button class="input" id="form_btn" onclick="close_new_folder()">✕</button>
+        <div class="folder_form">
+            <div class="exit_new_folder">
+                <button class="input" id="form_btn" onclick="close_new_folder()">✕</button>
+            </div>
+            <form action="{{ url_for('views.add_folder') }}" method="POST"><!--class="folder_form">-->
+                <input class="input" type="text" name="name" id="form_input" placeholder="Folder name">
+                <input class="input" type="submit" id="form_btn" value="Create Folder" onclick="close_new_folder()">
+            </form>
         </div>
-        <form action="{{ url_for('views.add_folder') }}" method="POST" class="folder_form">
-            <input class="input" type="text" name="name" id="form_input" placeholder="Folder name">
-            <input class="input" type="submit" id="form_btn" value="Create Folder" onclick="close_new_folder()">
-        </form>
     </div>
 </div>
 {% endblock %}

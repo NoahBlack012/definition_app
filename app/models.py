@@ -2,6 +2,10 @@ from . import db
 from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
+    """
+        Model to represent a user. 
+        Contains email, username, password when initialized
+    """
     __tablename__ = "users"
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)

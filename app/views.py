@@ -19,13 +19,13 @@ def page_not_found(e):
 @login_required
 def dashboard():
     folders = Folder.query.filter_by(userid=current_user.id).all()
-    return render_template("dashboard.html", folders=folders, username=current_user.username)
+    return render_template("dashboard.html", folders=folders, username=current_user.username, title="Dashboard")
 
 @views.route("/folder/<int:folder_id>")
 @login_required
 def folder(folder_id):
     folder = Folder.query.filter_by(id=folder_id).first()
-    return render_template("folder.html", folder=folder, username=current_user.username)
+    return render_template("folder.html", folder=folder, username=current_user.username, title=folder.name)
 
 @views.route("/topic/<int:topic_id>")
 @login_required
@@ -33,7 +33,7 @@ def topic(topic_id):
     topic = Topic.query.filter_by(id=topic_id).first()
     if not verify_topic(current_user.id, topic_id):
         return redirect(url_for("views.dashboard"))
-    return render_template("topic.html", topic=topic, username=current_user.username)
+    return render_template("topic.html", topic=topic, username=current_user.username, title=topic.title)
 
 @views.route("/quiz/<int:topic_id>", methods=["GET", "POST"])
 @login_required
@@ -69,7 +69,8 @@ def quiz(topic_id):
             username=current_user.username, 
             question=session["quiz"][question_number],
             question_number=question_number+1,
-            last_question=last_question
+            last_question=last_question,
+            title="Quiz"
             )
 
 @views.route("/record_answer", methods=["POST"])
@@ -142,7 +143,8 @@ def quiz_results():
     return render_template("results.html", 
         percentage=percentage,
         username=current_user.username,
-        quiz=quiz
+        quiz=quiz,
+        title="Quiz Results"
         )
 
 @views.route("/add_folder", methods=["POST"])
