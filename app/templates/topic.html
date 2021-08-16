@@ -10,16 +10,15 @@
     data_length = (data_length - data_length % 2) / 2
     var last_index = data_length - 1;
 
-    function edit(def){
-        document.querySelector(`.${def}_edit`).style = "display:block";
-        document.querySelector(`#${def}`).style = "display:none";
+    function edit(loop_index){
+        document.querySelector(`.edit_${loop_index}`).style = "display:block";
+        document.querySelector(`#topic_${loop_index}`).style = "display:none";
         document.querySelector("#edit_btn").style = "display:none";
-        console.log("edited");
     }
 
-    function exit_edit(def){
-        document.querySelector(`.${def}_edit`).style = "display:none";
-        document.querySelector(`#${def}`).style = "display:block";
+    function exit_edit(loop_index){
+        document.querySelector(`.edit_${loop_index}`).style = "display:none";
+        document.querySelector(`#topic_${loop_index}`).style = "display:block";
         document.querySelector("#edit_btn").style = "display:block";
     }
 
@@ -77,22 +76,22 @@
 <div class="topic">
     <ul>
         {% for def in topic.data %}
-            <li id="{{ def }}">
+            <li id="topic_{{ loop.index }}">
                 {{ def }} -> {{ topic.data[def] }}
             </li>
-            <button onclick="edit('{{ def }}')" id = "edit_btn">Edit</button>
-            <div class="{{ def }}_edit" id="edit_div" style="display: none;">
-                <form action="{{ url_for('views.edit_def', topic_id=topic.id, def=def) }}" method="POST" onsubmit="exit_edit('{{ def }}')">
+            <button onclick="edit('{{ loop.index }}')" id = "edit_btn">Edit</button>
+            <div class="edit_{{ loop.index }}" id="edit_div" style="display: none;">
+                <form action="{{ url_for('views.edit_def', topic_id=topic.id, def=def) }}" method="POST" onsubmit="exit_edit('{{ loop.index }}')">
                     <input type="text" name="new_key" value="{{ def }}">
                     <input type="text" name="new_value" value="{{ topic.data[def] }}">
                     <input 
                         type="submit" 
                         value="Save" 
-                        onclick="exit_edit('{{ def }}')">
+                        onclick="exit_edit('{{ loop.index }}')">
                 </form>
-                <button onclick="exit_edit('{{ def }}')">Cancel</button>
+                <button onclick="exit_edit('{{ loop.index }}')">Cancel</button>
                 <form action="{{ url_for('views.delete_def', def=def, topic_id=topic.id ) }}" method="POST">
-                    <input type="submit" value="✕" onclick="exit_edit('{{ def }}')">
+                    <input type="submit" value="Delete" onclick="exit_edit('{{ loop.index }}')">
                 </form>
             </div>
         {% endfor %}
