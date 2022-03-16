@@ -4,6 +4,9 @@ html, body {
     height:100%;
   }
   
+html *{
+    font-family: sans-serif !important;
+}
 body {
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;
@@ -11,9 +14,6 @@ body {
 }
 
 
-input{
-    autocomplete
-}
 @keyframes gradient {
     0% {
         background-position: 0% 50%;
@@ -86,6 +86,7 @@ a, a:hover{
     padding-bottom: 10px;
     width: 100%;
     background-color: rgba(64, 63, 59, 0.7);
+    border-bottom: 2px solid white;;
 }
 
 .nav_btn{
@@ -107,9 +108,18 @@ a, a:hover{
 }
 
 
-.title{
+.page_title{
     height: 100%;
     border-right: 3px solid white;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 25pt;
+    margin-right: 5px;
+}
+
+.title{
+    height: 100%;
     padding: 5px;
     padding-left: 20px;
     padding-right: 20px;
