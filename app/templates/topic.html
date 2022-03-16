@@ -1,6 +1,8 @@
 {% extends 'layout.html' %}
 {% block title %}Topic Name{% endblock %}
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/topic.css') }}">
+
 <script>
     var flashcard_count = 1;
     var flashcard_flipped = false;
@@ -68,8 +70,9 @@
 
 {% block content %}
 <br>
-<a href="{{ url_for('views.dashboard') }}">Dashboard</a>
-<a href="{{ url_for('views.folder', folder_id=topic.folderid) }}">Go Back</a>
+<a href="{{ url_for('views.folder', folder_id=topic.folderid) }}">
+    <div class="link_btn">{{ folder_name }}</div>
+</a>
 <form action="{{ url_for('views.quiz', topic_id=topic.id, question_number=0) }}" method="POST">
     <input type="submit" value="Generate Quiz">
 </form>
@@ -100,7 +103,7 @@
     <button onclick="open_flashcards()">View Flashcards</button>
     <div class="flashcards">
         {% for def in topic.data %}
-            <div class="card" id="card_{{ loop.index }}" style="display: none; background-color: green;">
+            <div class="card" id="card_{{ loop.index }}" style="display: none; background-color: green; cursor: pointer;">
                 <button onclick="close_flashcards()">✕</button>
                 {% if not loop.first %}
                 <button onclick="previous_flashcard()">Previous</button>

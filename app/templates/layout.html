@@ -9,11 +9,12 @@
     </head>
     <body>
         <div class="nav">
-            <div class="page_title">
-                <h1 class="title">
-                    {{ title }}
-                </h1>
-            </div>
+            <h1 class="page_title">
+                {{ title }}
+            </h1>
+            <h1 class="title">
+                Define-IT
+            </h1>
             <div class="nav_links">
                 {% if not username %}
                     <a href="{{ url_for('auth.signup') }}" class="nav_btn">Signup</a>

@@ -21,9 +21,9 @@
 </div>
 <div class="folder_items">
     {% for topic in folder.subtopics %}
-        <div class="folder_item" id="form_btn">
-            <a href="{{ url_for('views.topic', topic_id=topic.id) }}">{{ topic.title }}</a>
-        </div>
+    <a href="{{ url_for('views.topic', topic_id=topic.id) }}">
+        <div class="folder_item" id="form_btn">{{ topic.title }}</div>
+    </a>
     {% endfor %}
 </div>
 
