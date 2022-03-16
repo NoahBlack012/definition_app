@@ -16,6 +16,10 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 @views.route("/")
+def home():
+    return redirect("dashboard")
+
+@views.route("/dashboard")
 @login_required
 def dashboard():
     folders = Folder.query.filter_by(userid=current_user.id).all()
@@ -33,7 +37,8 @@ def topic(topic_id):
     topic = Topic.query.filter_by(id=topic_id).first()
     if not verify_topic(current_user.id, topic_id):
         return redirect(url_for("views.dashboard"))
-    return render_template("topic.html", topic=topic, username=current_user.username, title=topic.title)
+    folder = Folder.query.filter_by(id=topic.folderid).first()
+    return render_template("topic.html", topic=topic, username=current_user.username, title=topic.title, folder_name=folder.name)
 
 @views.route("/quiz/<int:topic_id>", methods=["GET", "POST"])
 @login_required
@@ -225,6 +230,7 @@ def edit_def():
     return redirect(url_for("views.topic", topic_id=topic_id))
 
 @views.route("/delete_def", methods=["POST"])
+@login_required
 def delete_def():
     topic_id = request.args.get("topic_id")
     definition = request.args.get("def")
